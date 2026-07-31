@@ -34,9 +34,18 @@ const animationTimeline = () => {
     .split("")
     .join("</span><span>")}</span`;
 
-  hbd.innerHTML = `<span>${hbd.innerHTML
-    .split("")
-    .join("</span><span>")}</span`;
+  // Per-character spans for the stagger, grouped by word so the heading can
+  // still wrap between words on a narrow screen.
+  hbd.innerHTML = hbd.textContent
+    .split(" ")
+    .map(
+      word =>
+        `<span class="word">${word
+          .split("")
+          .map(char => `<span>${char}</span>`)
+          .join("")}</span>`
+    )
+    .join(" ");
 
   const ideaTextTrans = {
     opacity: 0,
@@ -115,7 +124,7 @@ const animationTimeline = () => {
       0.05
     )
     .to(".fake-btn", 0.1, {
-      backgroundColor: "rgb(127, 206, 248)"
+      backgroundColor: "rgb(255, 205, 130)"
     })
     .to(
       ".four",
@@ -129,14 +138,16 @@ const animationTimeline = () => {
     )
     .from(".idea-1", 0.7, ideaTextTrans)
     .to(".idea-1", 0.7, ideaTextTransLeave, "+=1.5")
+    .from(".idea-1b", 0.7, ideaTextTrans)
+    .to(".idea-1b", 0.7, ideaTextTransLeave, "+=2")
     .from(".idea-2", 0.7, ideaTextTrans)
     .to(".idea-2", 0.7, ideaTextTransLeave, "+=1.5")
     .from(".idea-3", 0.7, ideaTextTrans)
     .to(".idea-3 strong", 0.5, {
       scale: 1.2,
       x: 10,
-      backgroundColor: "rgb(21, 161, 237)",
-      color: "#fff"
+      backgroundColor: "#f0a830",
+      color: "#132227"
     })
     .to(".idea-3", 0.7, ideaTextTransLeave, "+=1.5")
     .from(".idea-4", 0.7, ideaTextTrans)
@@ -208,8 +219,10 @@ const animationTimeline = () => {
       },
       0.2
     )
+    .addLabel("reveal", "-=2")
+    .set(".six", { opacity: 1 }, "reveal")
     .from(
-      ".lydia-dp",
+      ".niza-dp",
       0.5,
       {
         scale: 3.5,
@@ -218,16 +231,28 @@ const animationTimeline = () => {
         y: -25,
         rotationZ: -45
       },
-      "-=2"
+      "reveal"
     )
-    .from(".hat", 0.5, {
-      x: -100,
-      y: 350,
-      rotation: -180,
-      opacity: 0
-    })
+    // Lands at a slight tilt, pivoting on the brim, so it reads as worn
+    // rather than pasted on.
+    .fromTo(
+      ".hat",
+      0.5,
+      {
+        x: -100,
+        y: 350,
+        rotation: -180,
+        opacity: 0
+      },
+      {
+        x: 0,
+        y: 0,
+        rotation: -8,
+        opacity: 1
+      }
+    )
     .staggerFrom(
-      ".wish-hbd span",
+      ".wish-hbd .word span",
       0.7,
       {
         opacity: 0,
@@ -240,7 +265,7 @@ const animationTimeline = () => {
       0.1
     )
     .staggerFromTo(
-      ".wish-hbd span",
+      ".wish-hbd .word span",
       0.7,
       {
         scale: 1.4,
@@ -249,7 +274,7 @@ const animationTimeline = () => {
       {
         scale: 1,
         rotationY: 0,
-        color: "#ff69b4",
+        color: "#e2708a",
         ease: Expo.easeOut
       },
       0.1,
@@ -295,10 +320,35 @@ const animationTimeline = () => {
   // tl.seek("currentStep");
   // tl.timeScale(2);
 
-  // Restart Animation on click
-  const replyBtn = document.getElementById("replay");
-  replyBtn.addEventListener("click", () => {
+  // Anyone who asks for reduced motion gets the last card, held still:
+  // her photo, the hat, the wish. Playing it is then their choice.
+  const stillMode = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (stillMode) {
+    document.body.classList.add("reduced");
+    tl.progress(1).pause();
+    // The timeline's last beat fades the portrait out to make room for the
+    // outro; in still mode both are stacked, so put it back.
+    TweenMax.set(".six", { opacity: 1, y: 0, zIndex: 1 });
+  }
+
+  const play = () => {
+    document.body.classList.remove("reduced");
     tl.restart();
+  };
+
+  const replyBtn = document.getElementById("replay");
+  replyBtn.setAttribute("tabindex", "0");
+  replyBtn.setAttribute("role", "button");
+  if (stillMode) {
+    replyBtn.innerText = "Play the whole thing.";
+  }
+  replyBtn.addEventListener("click", play);
+  replyBtn.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      play();
+    }
   });
 };
 

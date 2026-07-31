@@ -5,8 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#132227">
+  <meta name="description" content="A little birthday page for Niza.">
   <title>Happy Birthday!!! :)</title>
-  <link href="https://fonts.googleapis.com/css?family=Work+Sans:300,400" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Karla:wght@300..700&display=swap"
+    rel="stylesheet">
   <link rel="shortcut icon" type="image/png" href="img/favicon.png" />
   <link rel="stylesheet" href="style/style.css">
 </head>
@@ -16,7 +22,7 @@
     <div class="one">
       <h1 class="one">
         <span data-node-name="greeting">Hey</span>
-        <span data-node-name="name">Lydia</span>
+        <span data-node-name="name">Niza</span>
       </h1>
       <p class="two" data-node-name="greetingText">I really like your name btw!</p>
     </div>
@@ -31,6 +37,7 @@
     </div>
     <div class="five">
       <p class="idea-1" data-node-name="text2">That's what I was going to do.</p>
+      <p class="idea-1b" data-node-name="text2b">Which is, let's be honest, exactly what your boyfriend sent.</p>
       <p class="idea-2" data-node-name="text3">But then I stopped.</p>
       <p class="idea-3">
         <span data-node-name="text4">I realised, I wanted to do something</span>
@@ -46,8 +53,14 @@
       </p>
     </div>
     <div class="six">
-      <img src="img/lydia2.png" alt="" class="lydia-dp" data-node-name="imagePath">
-      <img src="img/hat.svg" alt="" class="hat">
+      <div class="dp-frame">
+        <span class="dp-glow" aria-hidden="true"></span>
+        <span class="dp-ring" aria-hidden="true"></span>
+        <span class="dp-mask">
+          <img src="img/niza2.jpeg" alt="Niza" class="niza-dp" data-node-name="imagePath">
+        </span>
+        <img src="img/hat.svg" alt="" class="hat">
+      </div>
       <div class="wish">
         <h3 class="wish-hbd" data-node-name="wishHeading">Happy Birthday!</h3>
         <h5 data-node-name="wishText">May the js.prototypes always be with you! ;)</h5>

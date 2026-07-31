@@ -1,15 +1,75 @@
+/* ------------------------------------------------------------------
+   Palette drawn from the photo: sepia haze, teal paint, candlelight.
+   ------------------------------------------------------------------ */
+:root {
+  --night: #132227;
+  --night-2: #27424a;
+  --cream: #f7ece0;
+  --cream-dim: rgba(247, 236, 224, 0.62);
+  --marigold: #f0a830;
+  --rose: #e2708a;
+  --mint: #7fd1b9;
+
+  --dp: 260px; /* portrait diameter — everything in .six scales off this */
+
+  --display: "Fraunces", Georgia, serif;
+  --body: "Karla", "Helvetica Neue", Arial, sans-serif;
+}
+
 html {
   box-sizing: border-box;
+  /* The portrait glow deliberately bleeds wider than a phone screen; without
+     this the page pans sideways ~30px under your thumb on Android. */
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
   margin: 0;
-  font-family: "Work Sans", sans-serif;
+  overflow-x: hidden;
+  font-family: var(--body);
+  color: var(--cream);
+  background: var(--night);
+  -webkit-font-smoothing: antialiased;
 }
 
+/* Candlelight: a warm pool of light low on the page, cool night above. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(120% 70% at 50% 108%, rgba(240, 168, 48, 0.28) 0%, rgba(240, 168, 48, 0) 60%),
+    radial-gradient(90% 60% at 78% 6%, rgba(226, 112, 138, 0.14) 0%, rgba(226, 112, 138, 0) 55%),
+    linear-gradient(168deg, var(--night) 0%, var(--night-2) 55%, #1b2f35 100%);
+}
+
+/* Fine grain so the flat gradient reads like film, not a CSS mesh. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: radial-gradient(rgba(247, 236, 224, 0.9) 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+}
+
+/* svh, not vh: on Chrome Android 100vh is the height with the toolbar
+   retracted, so a 100vh stage gets its bottom cut off until you scroll.
+   svh is the stable "toolbar showing" height, so nothing shifts mid-animation.
+   The plain vh line is the fallback for browsers without svh. */
 .container {
   height: 100vh;
-  width: 100vh;
+  height: 100svh;
+  width: min(92vw, 760px);
   margin: 0 auto;
   text-align: center;
   visibility: hidden;
@@ -17,8 +77,18 @@ body {
   overflow: hidden;
 }
 
+.container > div {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 20vh;
+  top: 20svh;
+}
+
+/* Sits lower than the other beats so the hat's tip clears the container. */
 .container div.six {
-  top: 10vh;
+  top: 16vh;
+  top: 16svh;
   z-index: 1;
 }
 
@@ -26,49 +96,68 @@ body {
 .container div.eight {
   width: 100vw;
   height: 100vh;
+  height: 100svh;
   position: fixed;
   top: 0;
+  left: 0;
 }
 
-.container > div {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 20vh;
-}
+/* --- Opening ------------------------------------------------------ */
 
 .one {
-  font-size: 4.5rem;
+  font-family: var(--display);
+  font-size: clamp(3rem, 11vw, 5.5rem);
+  font-weight: 300;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin: 0;
 }
 
-.one > img {
-  vertical-align: middle;
-  margin-bottom: 10px;
-  max-width: 100%;
-  height: auto;
+h1.one span:last-child {
+  display: block;
+  font-weight: 600;
+  color: var(--marigold);
 }
 
 .two {
-  font-size: 1.2rem;
-  font-weight: lighter;
+  font-size: 1.05rem;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-top: 1.4rem;
 }
 
 .three {
-  font-size: 3rem;
+  font-family: var(--display);
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  font-weight: 400;
+  font-variation-settings: "SOFT" 40;
+  letter-spacing: -0.02em;
 }
 
+/* --- The chat box -------------------------------------------------- */
+
 .four .text-box {
-  width: 600px;
+  width: min(100%, 560px);
   margin: 0 auto;
-  border: 3px solid #aaa;
-  border-radius: 5px;
-  padding: 10px;
+  border: 1px solid rgba(247, 236, 224, 0.22);
+  border-radius: 18px;
+  background: rgba(19, 34, 39, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  padding: 18px 20px 22px;
   position: relative;
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
 }
 
 .text-box p {
   margin: 0;
   text-align: left;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--cream);
 }
 
 .text-box span {
@@ -77,29 +166,52 @@ body {
 
 .text-box .fake-btn {
   position: absolute;
-  right: 5px;
-  bottom: 5px;
-  color: #fff;
-  background-color: rgb(21, 161, 237);
-  padding: 5px 8px;
-  border-radius: 3px;
+  right: 10px;
+  bottom: -18px;
+  color: var(--night);
+  background-color: var(--marigold);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 999px;
+  visibility: visible;
 }
 
+/* --- The thinking-out-loud beats ----------------------------------- */
+
 .five p {
-  font-size: 2rem;
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 5.5vw, 2.2rem);
+  font-weight: 300;
+  font-variation-settings: "SOFT" 50;
   position: absolute;
   left: 0;
   right: 0;
+  margin: 0;
+}
+
+/* An aside, so it's set a size down from the beats around it. */
+.five .idea-1b {
+  font-size: clamp(1.25rem, 4.4vw, 1.8rem);
+  font-style: italic;
+  max-width: 20ch;
+  margin: 0 auto;
+  color: var(--cream-dim);
 }
 
 .idea-3 strong {
-  padding: 3px 5px;
-  border-radius: 3px;
+  padding: 3px 10px;
+  border-radius: 6px;
   display: inline-block;
+  font-weight: 600;
+  color: var(--marigold);
 }
 
 .five .idea-5 {
-  font-size: 4rem;
+  font-size: clamp(2.4rem, 9vw, 4rem);
+  font-weight: 600;
 }
 
 .idea-5 span,
@@ -108,31 +220,129 @@ body {
   display: inline-block;
 }
 
-.idea-6 span {
-  font-size: 15rem;
+/* Characters animate one by one, but each word stays intact so the heading
+   breaks between words instead of overflowing a narrow screen. */
+.wish-hbd .word {
+  white-space: nowrap;
 }
 
+.idea-6 span {
+  font-size: clamp(7rem, 30vw, 15rem);
+  font-weight: 700;
+  font-variation-settings: "WONK" 1;
+  color: var(--marigold);
+}
+
+/* --- The reveal: her portrait, lit ---------------------------------- */
+
+/* Held back until the timeline reveals it — otherwise the lit frame gives
+   away the ending during the opening beats. */
 .six {
   position: relative;
+  opacity: 0;
 }
 
-.six img {
-  display: inline-block;
-  max-width: 100%;
-  height: auto;
+.reduced .six {
+  opacity: 1;
 }
 
-.six .hat {
+.dp-frame {
+  position: relative;
+  width: var(--dp);
+  height: var(--dp);
+  margin: 0 auto;
+}
+
+/* The glow is the signature: a candle behind the frame, not a drop shadow. */
+.dp-glow {
   position: absolute;
-  width: 80px;
-  top: -35px;
-  left: 41.5%;
-  /* transform: scale(0.1); */
+  left: -55%;
+  top: -55%;
+  width: 210%;
+  height: 210%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(240, 168, 48, 0.4) 0%,
+    rgba(226, 112, 138, 0.18) 38%,
+    rgba(240, 168, 48, 0) 68%
+  );
+  animation: flicker 5.5s ease-in-out infinite;
+}
+
+.dp-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 1px solid rgba(240, 168, 48, 0.55);
+}
+
+.dp-mask {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 22px 45px -18px rgba(0, 0, 0, 0.85);
+}
+
+/* Crop the photo to a square centred on her face so the head sits
+   dead-centre in the circle — that is what lets the hat land properly. */
+.niza-dp {
+  position: absolute;
+  width: 148.1%;
+  max-width: none;
+  height: auto;
+  left: -33.7%;
+  top: -42.2%;
+  display: block;
+}
+
+.hat {
+  position: absolute;
+  width: 38%;
+  height: auto;
+  left: 31%;
+  top: -30.7%;
+  transform: rotate(-8deg);
+  transform-origin: 50% 92%;
+}
+
+.wish {
+  margin-top: 2.2rem;
+}
+
+.wish-hbd {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 6.8vw, 3.1rem);
+  font-weight: 700;
+  font-variation-settings: "SOFT" 60, "WONK" 1;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.wish h5 {
+  font-weight: 300;
+  font-size: clamp(1rem, 3.6vw, 1.3rem);
+  line-height: 1.5;
+  color: var(--cream-dim);
+  margin: 14px auto 0;
+  max-width: 26ch;
+}
+
+/* --- Balloons & confetti -------------------------------------------- */
+
+.baloons img {
+  max-width: 100%;
 }
 
 .baloons img {
   display: inline-block;
   position: absolute;
+  width: 90px;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
 }
 
 .baloons img:nth-child(even) {
@@ -156,144 +366,121 @@ body {
   z-index: -1;
 }
 
-.eight svg:nth-child(1) {
-  top: 7vh;
-  left: 5vw;
-  fill: #bd6ecf;
-}
+.eight svg:nth-child(1) { top: 7vh; top: 7svh;  left: 5vw;  fill: #f0a830; }
+.eight svg:nth-child(2) { top: 23vh; top: 23svh; left: 35vw; fill: #7fd1b9; }
+.eight svg:nth-child(3) { top: 33vh; top: 33svh; left: 23vw; fill: #e2708a; }
+.eight svg:nth-child(4) { top: 43vh; top: 43svh; left: 57vw; fill: #3f6a70; }
+.eight svg:nth-child(5) { top: 68vh; top: 68svh; left: 7vw;  fill: #ef6a4c; }
+.eight svg:nth-child(6) { top: 42vh; top: 42svh; left: 77vw; fill: #f0a830; }
+.eight svg:nth-child(7) { top: 68vh; top: 68svh; left: 83vw; fill: #f7ece0; }
+.eight svg:nth-child(8) { top: 86vh; top: 86svh; left: 37vw; fill: #e2708a; }
+.eight svg:nth-child(9) { top: 94vh; top: 94svh; left: 87vw; fill: #7fd1b9; }
 
-.eight svg:nth-child(2) {
-  top: 23vh;
-  left: 35vw;
-  fill: #7dd175;
-}
-
-.eight svg:nth-child(3) {
-  top: 33vh;
-  left: 23vw;
-  fill: #349d8b;
-}
-
-.eight svg:nth-child(4) {
-  top: 43vh;
-  left: 57vw;
-  fill: #347a9d;
-}
-
-.eight svg:nth-child(5) {
-  top: 68vh;
-  left: 7vw;
-  fill: #c66053;
-}
-
-.eight svg:nth-child(6) {
-  top: 42vh;
-  left: 77vw;
-  fill: #bfaa40;
-}
-
-.eight svg:nth-child(7) {
-  top: 68vh;
-  left: 83vw;
-  fill: #e3bae8;
-}
-
-.eight svg:nth-child(8) {
-  top: 86vh;
-  left: 37vw;
-  fill: #8762cb;
-}
-
-.eight svg:nth-child(9) {
-  top: 94vh;
-  left: 87vw;
-  fill: #9a90da;
-}
-
-.wish-hbd {
-  font-size: 3em;
-  margin: 0;
-  text-transform: uppercase;
-}
-
-.wish h5 {
-  font-weight: lighter;
-  font-size: 2rem;
-  margin: 10px 0 0;
-}
+/* --- Outro ---------------------------------------------------------- */
 
 .nine p {
-  font-size: 2rem;
-  font-weight: lighter;
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--cream-dim);
+  max-width: 24ch;
+  margin: 0 auto 1.1rem;
 }
 
+.nine .last-smile {
+  font-size: 2rem;
+  color: var(--marigold);
+}
+
+/* Padded out to a ~44px touch target — it is the only thing to tap. */
 #replay {
   z-index: 3;
   cursor: pointer;
+  color: var(--marigold);
+  border-bottom: 1px solid rgba(240, 168, 48, 0.4);
+  padding: 12px 8px 8px;
+  width: fit-content;
+  transition: opacity 0.2s ease;
+  -webkit-tap-highlight-color: rgba(240, 168, 48, 0.25);
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-/* Media Queries */
-@media screen and (max-height: 1000px) {
-  .six .hat {
-    left: 40%;
-  }
+#replay:hover {
+  opacity: 0.75;
 }
+
+#replay:focus-visible {
+  outline: 2px solid var(--marigold);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  45%      { opacity: 1;    transform: scale(1.05); }
+  70%      { opacity: 0.78; transform: scale(0.98); }
+}
+
+/* --- Responsive ------------------------------------------------------ */
 
 @media screen and (max-height: 800px) {
-  .six .hat {
-    left: 37%;
-  }
+  :root { --dp: 210px; }
+  .wish { margin-top: 1.5rem; }
 }
 
-@media screen and (max-height: 700px) {
-  .six .hat {
-    left: 32%;
-  }
-}
-
-@media screen and (max-height: 850px) and (max-width: 450px) {
-  .six .hat {
-    left: 32%;
-  }
+@media screen and (max-height: 680px) {
+  :root { --dp: 170px; }
 }
 
 @media screen and (max-width: 500px) {
-  .container {
-    width: 90%;
-  }
+  :root { --dp: 200px; }
 
-  .four .text-box {
-    width: 90%;
-  }
+  .baloons img { width: 64px; }
 
-  .text-box .fake-btn {
-    right: 5px;
-    bottom: -38px;
-  }
+  .two { letter-spacing: 0.1em; }
 
-  .idea-5 span {
-    display: block;
-  }
+  .idea-5 span { display: block; }
 
-  .idea-6 span {
-    font-size: 10rem;
-  }
+  .four .text-box { padding: 16px 16px 20px; }
+}
 
-  .six .hat {
-    width: 50px;
-    top: -20px;
-  }
+/* --- Reduced motion: the last card, held still ------------------------ */
 
-  .wish-hbd {
-    font-size: 2.2em;
-  }
+.reduced .container {
+  height: auto;
+  min-height: 100vh;
+  min-height: 100svh;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 14svh 0 8svh;
+}
 
-  .wish h5 {
-    font-size: 1.4rem;
-  }
+.reduced .container > div {
+  position: static;
+}
 
-  .nine p {
-    font-size: 1.5rem;
-    font-weight: lighter;
-  }
+.reduced .one,
+.reduced .two,
+.reduced .three,
+.reduced .four,
+.reduced .five,
+.reduced .seven,
+.reduced .eight {
+  display: none;
+}
+
+.reduced .nine {
+  margin-top: 3rem;
+}
+
+.reduced #replay {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dp-glow { animation: none; }
 }
