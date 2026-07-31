@@ -481,6 +481,11 @@ h1.one span:last-child {
   margin-right: auto;
 }
 
+/* Fallback card with no animation available — nothing to replay. */
+.no-anim #replay {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dp-glow { animation: none; }
 }

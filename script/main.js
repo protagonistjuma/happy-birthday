@@ -1,3 +1,15 @@
+// The stage starts hidden and is only revealed by the animation, so any
+// failure along the way would leave a permanently blank page. This shows the
+// final card instead — the copy in index.html is already the real copy, so it
+// stands on its own even if customize.json never arrives.
+const showStaticCard = () => {
+  document.body.classList.add("reduced", "no-anim");
+  const container = document.querySelector(".container");
+  if (container) {
+    container.style.visibility = "visible";
+  }
+};
+
 // Import the data to customize and insert them into page
 const fetchData = () => {
   fetch("customize.json")
@@ -19,13 +31,20 @@ const fetchData = () => {
         // Run amimation if so
         if ( dataArr.length === dataArr.indexOf(customData) + 1 ) {
           animationTimeline();
-        } 
+        }
       });
-    });
+    })
+    .catch(showStaticCard);
 };
 
 // Animation Timeline
 const animationTimeline = () => {
+  // No GSAP means no timeline — show the card rather than nothing.
+  if (typeof TimelineMax === "undefined" || typeof TweenMax === "undefined") {
+    showStaticCard();
+    return;
+  }
+
   // Spit chars that needs to be animated individually
   const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
   const hbd = document.getElementsByClassName("wish-hbd")[0];
